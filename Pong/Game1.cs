@@ -11,8 +11,8 @@ namespace Pong
         SpriteBatch spriteBatch;
 
         Sprite circle;
-        Sprite paddle1;
-        Sprite paddle2;
+        Sprite leftPaddle;
+        Sprite rightPaddle;
         Vector2 circleXSpeed;
         Vector2 circleYSpeed;
         Vector2 paddle1Speed;
@@ -46,8 +46,8 @@ namespace Pong
 
             var paddleTexture = Content.Load <Texture2D>("rectangle");
             var circleTexture = Content.Load<Texture2D>("circle");
-            paddle1 = new Sprite(new Vector2(10, 250), pixel, new Point(30,100), Color.White);
-            paddle2 = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width - 40, 250), pixel, new Point(30,100), Color.White);
+            leftPaddle = new Sprite(new Vector2(10, 250), pixel, new Point(30,100), Color.White);
+            rightPaddle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width - 40, 250), pixel, new Point(30,100), Color.White);
             circle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2, GraphicsDevice.Viewport.Bounds.Height / 2), pixel, new Point (50, 50), Color.White);
             paddle1Speed = new Vector2(0, 10);
             paddle2Speed = new Vector2(0, 10);
@@ -61,12 +61,12 @@ namespace Pong
             circle.Position += circleXSpeed;
             circle.Position += circleYSpeed;
 
-            paddle2.Position += paddle2Speed;
-            if (paddle2.Position.Y + 100 <= GraphicsDevice.Viewport.Bounds.Height)
+            rightPaddle.Position += paddle2Speed;
+            if (rightPaddle.Position.Y + 100 <= GraphicsDevice.Viewport.Bounds.Height)
             {
                 paddle2Speed *= -1;
             }
-            if (paddle2.Position.Y >= 0)
+            if (rightPaddle.Position.Y >= 0)
             {
                 paddle2Speed *= -1;
             }
@@ -92,13 +92,13 @@ namespace Pong
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             var keyboard = Keyboard.GetState();
-            if (keyboard.IsKeyDown(Keys.Down) && paddle1.Position.Y + 100 <= GraphicsDevice.Viewport.Bounds.Height)
+            if (keyboard.IsKeyDown(Keys.Down) && leftPaddle.Position.Y + 100 <= GraphicsDevice.Viewport.Bounds.Height)
             {
-                paddle1.Position += paddle1Speed;
+                leftPaddle.Position += paddle1Speed;
             }
-            if (keyboard.IsKeyDown(Keys.Up) && paddle1.Position.Y >= 0)
+            if (keyboard.IsKeyDown(Keys.Up) && leftPaddle.Position.Y >= 0)
             {
-                paddle1.Position -= paddle1Speed;
+                leftPaddle.Position -= paddle1Speed;
             }
             // TODO: Add your update logic here
 
@@ -111,8 +111,8 @@ namespace Pong
             spriteBatch.Begin();
 
             circle.Draw(spriteBatch);
-            paddle1.Draw(spriteBatch);
-            paddle2.Draw(spriteBatch);
+            leftPaddle.Draw(spriteBatch);
+            rightPaddle.Draw(spriteBatch);
 
             spriteBatch.End();
             base.Draw(gameTime);
