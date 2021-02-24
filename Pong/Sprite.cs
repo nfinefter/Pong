@@ -11,6 +11,14 @@ namespace Pong
 
         public Point Size { get; set; }
 
+        public Rectangle HitBox
+        {
+            get
+            {
+                return new Rectangle(Position.ToPoint(), Size);
+            }
+        }
+            
         public Sprite(Vector2 position, Texture2D texture, Point size, Color tint)
         {
             Size = size;
@@ -21,7 +29,7 @@ namespace Pong
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, new Rectangle(Position.ToPoint(), Size), Tint);
+            spriteBatch.Draw(Texture, HitBox, Tint);
         }
     }
 }
