@@ -62,11 +62,11 @@ namespace Pong
             rightPaddle.Position += paddle2Speed;
             if (rightPaddle.Position.Y + 100 <= GraphicsDevice.Viewport.Bounds.Height)
             {
-                paddle2Speed *= -1;
+                rightPaddle.ySpeed *= -1;
             }
             if (rightPaddle.Position.Y >= 0)
             {
-                paddle2Speed *= -1;
+                rightPaddle.ySpeed *= -1;
             }
 
             //change all bouncing to losing
