@@ -8,6 +8,8 @@ namespace Pong
         public Vector2 Position { get; set; }
         public Texture2D Texture { get; set; }
         public Color Tint { get; set; }
+        public int xSpeed { get; set;}
+        public int ySpeed {get; set; }
 
         public Point Size { get; set; }
 
@@ -19,12 +21,14 @@ namespace Pong
             }
         }
             
-        public Sprite(Vector2 position, Texture2D texture, Point size, Color tint)
+        public Sprite(Vector2 position, Texture2D texture, Point size, Color tint, int xspeed, int yspeed)
         {
             Size = size;
             Position = position;
             Texture = texture;
             Tint = tint;
+            xSpeed = xspeed;
+            ySpeed = yspeed;
         }
 
         public void Draw(SpriteBatch spriteBatch)

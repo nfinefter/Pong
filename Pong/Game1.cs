@@ -17,10 +17,6 @@ namespace Pong
         TextSprite score;
 
         // TODO: Why do these exist??? Aren't they part of their classes???
-        Vector2 circleXSpeed;
-        Vector2 circleYSpeed;
-        Vector2 paddle1Speed;
-        Vector2 paddle2Speed;
         
 
 
@@ -36,7 +32,6 @@ namespace Pong
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             IsMouseVisible = true;
-            // TODO: Add your initialization logic here
 
             base.Initialize();
         }
@@ -50,21 +45,19 @@ namespace Pong
 
             var paddleTexture = Content.Load <Texture2D>("rectangle");
             var circleTexture = Content.Load<Texture2D>("circle");
-            leftPaddle = new Sprite(new Vector2(10, 250), pixel, new Point(30,100), Color.White);
-            rightPaddle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width - 40, 250), pixel, new Point(30,100), Color.White);
-            circle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2, GraphicsDevice.Viewport.Bounds.Height / 2), pixel, new Point (50, 50), Color.White);
+            leftPaddle = new Sprite(new Vector2(10, 250), pixel, new Point(30,100), Color.White, 8, 8);
+            rightPaddle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width - 40, 250), pixel, new Point(30,100), Color.White, 8, 8);
+            circle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2, GraphicsDevice.Viewport.Bounds.Height / 2), pixel, new Point (50, 50), Color.White, 8, 8);
             score = new TextSprite(Vector2.Zero, Content.Load<SpriteFont>("GameFont"), "Score: 0", Color.Black);
             paddle1Speed = new Vector2(0, 10);
             paddle2Speed = new Vector2(0, 10);
-            circleXSpeed = new Vector2(8, 0);
-            circleYSpeed = new Vector2(0, 8);
             // TODO: use this.Content to load your game content here
         }
 
         protected override void Update(GameTime gameTime)
         {
-            circle.Position += circleXSpeed;
-            circle.Position += circleYSpeed;
+            circle.Position += circle.xSpeed;
+            circle.Position += circle.ySpeed;
 
             rightPaddle.Position += paddle2Speed;
             if (rightPaddle.Position.Y + 100 <= GraphicsDevice.Viewport.Bounds.Height)
@@ -89,35 +82,35 @@ namespace Pong
 
             if (circle.Position.Y <= 0)
             {
-                circleYSpeed *= -1;
+                circle.ySpeed *= -1;
             }
             else if (circle.Position.Y + 50 >= GraphicsDevice.Viewport.Bounds.Height)
             {
-                circleYSpeed *= -1;
+                circle.ySpeed *= -1;
             }
 
             var keyboard = Keyboard.GetState();
 
             if (keyboard.IsKeyDown(Keys.Down) && leftPaddle.Position.Y + 100 <= GraphicsDevice.Viewport.Bounds.Height)
             {
-                leftPaddle.Position += paddle1Speed;
+                leftPaddle.Position += leftPaddle.ySpeed;
             }
             else if (keyboard.IsKeyDown(Keys.Up) && leftPaddle.Position.Y >= 0)
             {
-                leftPaddle.Position -= paddle1Speed;
+                leftPaddle.Position -= leftPaddle.ySpeed;
             }
             
 
             // Intersect with paddle check
             if(leftPaddle.HitBox.Intersects(circle.HitBox))
             {
-                circleXSpeed *= -1;
-                circleYSpeed *= -1;
+                circle.xSpeed *= -1;
+                circle.ySpeed *= -1;
             }
             else if (rightPaddle.HitBox.Intersects(circle.HitBox))
             {
-                circleXSpeed *= -1;
-                circleYSpeed *= -1;
+                circle.xSpeed *= -1;
+                circle.ySpeed *= -1;
             }
 
             base.Update(gameTime);
