@@ -45,12 +45,12 @@ namespace Pong
 
             var paddleTexture = Content.Load <Texture2D>("rectangle");
             var circleTexture = Content.Load<Texture2D>("circle");
-            leftPaddle = new Sprite(new Vector2(10, 250), pixel, new Point(30,100), Color.White, 8, 8);
-            rightPaddle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width - 40, 250), pixel, new Point(30,100), Color.White, 8, 8);
-            circle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2, GraphicsDevice.Viewport.Bounds.Height / 2), pixel, new Point (50, 50), Color.White, 8, 8);
+            leftPaddle.ySpeed = new Vector2(0, 10);
+            rightPaddle.ySpeed = new Vector2(0, 10);
+            leftPaddle = new Sprite(new Vector2(10, 250), pixel, new Point(30,100), Color.White, leftPaddle.xSpeed, leftPaddle.ySpeed);
+            rightPaddle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width - 40, 250), pixel, new Point(30,100), Color.White, leftPaddle.xSpeed, leftPaddle.ySpeed);
+            circle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2, GraphicsDevice.Viewport.Bounds.Height / 2), pixel, new Point (50, 50), Color.White, circle.xSpeed, circle.ySpeed);
             score = new TextSprite(Vector2.Zero, Content.Load<SpriteFont>("GameFont"), "Score: 0", Color.Black);
-            paddle1Speed = new Vector2(0, 10);
-            paddle2Speed = new Vector2(0, 10);
             // TODO: use this.Content to load your game content here
         }
 
@@ -59,7 +59,7 @@ namespace Pong
             circle.Position += circle.xSpeed;
             circle.Position += circle.ySpeed;
 
-            rightPaddle.Position += paddle2Speed;
+            rightPaddle.Position += rightPaddle.ySpeed;
             if (rightPaddle.Position.Y + 100 <= GraphicsDevice.Viewport.Bounds.Height)
             {
                 rightPaddle.ySpeed *= -1;
@@ -72,12 +72,12 @@ namespace Pong
             //change all bouncing to losing
             if (circle.Position.X <= 0)
             {
-                circle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2, GraphicsDevice.Viewport.Bounds.Height / 2), pixel, new Point(50, 50), Color.White);
+                circle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2, GraphicsDevice.Viewport.Bounds.Height / 2), pixel, new Point(50, 50), Color.White, circle.xSpeed, circle.ySpeed);
             }
             else if (circle.Position.X + 50 >= GraphicsDevice.Viewport.Bounds.Width)
             {
 
-                circle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2, GraphicsDevice.Viewport.Bounds.Height / 2), pixel, new Point (50, 50), Color.White);
+                circle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2, GraphicsDevice.Viewport.Bounds.Height / 2), pixel, new Point (50, 50), Color.White, circle.xSpeed, circle.ySpeed);
             }
 
             if (circle.Position.Y <= 0)
