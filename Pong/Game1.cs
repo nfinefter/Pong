@@ -65,17 +65,12 @@ namespace Pong
             var paddleTexture = Content.Load <Texture2D>("rectangle");
             var circleTexture = Content.Load<Texture2D>("circle");
 
-
             Reset();
-
-           
-            // TODO: use this.Content to load your game content here
         }
 
         protected override void Update(GameTime gameTime)
         {
             
-
             circle.Position += circle.xSpeed;
             circle.Position += circle.ySpeed;
 
@@ -89,7 +84,6 @@ namespace Pong
                 rightPaddle.ySpeed *= -1;
             }
 
-            //change all bouncing to losing
             if (circle.Position.X <= 0)
             {
                 circle.Position = new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
@@ -166,7 +160,7 @@ namespace Pong
             leftPaddle.Draw(spriteBatch);
             rightPaddle.Draw(spriteBatch);
             score.Draw(spriteBatch);
-
+            playAgain.Draw(spriteBatch);
             spriteBatch.End();
             base.Draw(gameTime);
         }
