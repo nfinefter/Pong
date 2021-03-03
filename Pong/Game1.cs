@@ -14,11 +14,12 @@ namespace Pong
         Sprite leftPaddle;
         Sprite rightPaddle;
 
+
         TextSprite score;
 
         // TODO: Why do these exist??? Aren't they part of their classes???
-        
 
+        int scoreNum = 0;
 
         Texture2D pixel;
         public Game1()
@@ -42,20 +43,32 @@ namespace Pong
 
             pixel = Content.Load<Texture2D>("pixel");
 
-
             var paddleTexture = Content.Load <Texture2D>("rectangle");
             var circleTexture = Content.Load<Texture2D>("circle");
-            leftPaddle.ySpeed = new Vector2(0, 10);
-            rightPaddle.ySpeed = new Vector2(0, 10);
-            leftPaddle = new Sprite(new Vector2(10, 250), pixel, new Point(30,100), Color.White, leftPaddle.xSpeed, leftPaddle.ySpeed);
-            rightPaddle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width - 40, 250), pixel, new Point(30,100), Color.White, leftPaddle.xSpeed, leftPaddle.ySpeed);
-            circle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2, GraphicsDevice.Viewport.Bounds.Height / 2), pixel, new Point (50, 50), Color.White, circle.xSpeed, circle.ySpeed);
-            score = new TextSprite(Vector2.Zero, Content.Load<SpriteFont>("GameFont"), "Score: 0", Color.Black);
+
+            Vector2 leftPaddleYSpeed = new Vector2(0, 10);
+            Vector2 leftPaddleXSpeed = new Vector2(0, 0);
+            Vector2 rightPaddleYSpeed = new Vector2(0, 20);
+            Vector2 rightPaddleXSpeed = new Vector2(0, 0);
+            Vector2 circleYSpeed = new Vector2(0, 10);
+            Vector2 circleXSpeed = new Vector2(10, 0);
+
+           
+
+            leftPaddle = new Sprite(new Vector2(10, 250), pixel, new Point(30,100), Color.White, leftPaddleXSpeed, leftPaddleYSpeed);
+            rightPaddle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width - 40, 250), pixel, new Point(30,100), Color.White, rightPaddleXSpeed, rightPaddleYSpeed);
+            circle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2, GraphicsDevice.Viewport.Bounds.Height / 2), pixel, new Point (50, 50), Color.White, circleXSpeed, circleYSpeed);
+            score = new TextSprite(Vector2.Zero, Content.Load<SpriteFont>("GameFont"), $"Score: {scoreNum}", Color.Black);
+
+
+           
             // TODO: use this.Content to load your game content here
         }
 
         protected override void Update(GameTime gameTime)
         {
+            
+
             circle.Position += circle.xSpeed;
             circle.Position += circle.ySpeed;
 
@@ -72,12 +85,29 @@ namespace Pong
             //change all bouncing to losing
             if (circle.Position.X <= 0)
             {
-                circle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2, GraphicsDevice.Viewport.Bounds.Height / 2), pixel, new Point(50, 50), Color.White, circle.xSpeed, circle.ySpeed);
+                circle.Position = new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
+
+                score = new TextSprite(Vector2.Zero, Content.Load<SpriteFont>("GameFont"), $"YOU LOSE!", Color.Black);
+
+                circle.xSpeed = new Vector2(0, 0);
+                circle.ySpeed = new Vector2(0, 0);
             }
             else if (circle.Position.X + 50 >= GraphicsDevice.Viewport.Bounds.Width)
             {
+                circle.Position = new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
+                
+                circle.xSpeed *= -1;
+                circle.ySpeed *= -1;
 
-                circle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2, GraphicsDevice.Viewport.Bounds.Height / 2), pixel, new Point (50, 50), Color.White, circle.xSpeed, circle.ySpeed);
+                score = new TextSprite(Vector2.Zero, Content.Load<SpriteFont>("GameFont"), $"Score: {scoreNum}", Color.Black);
+
+                scoreNum++;
+                if (scoreNum >= 6)
+                {
+                    score = new TextSprite(Vector2.Zero, Content.Load<SpriteFont>("GameFont"), $"YOU WIN!", Color.Black);
+                    circle.xSpeed = new Vector2(10, 0);
+                    circle.ySpeed = new Vector2(0, 10);
+                }
             }
 
             if (circle.Position.Y <= 0)
