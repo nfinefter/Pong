@@ -105,8 +105,8 @@ namespace Pong
                 if (scoreNum >= 6)
                 {
                     score = new TextSprite(Vector2.Zero, Content.Load<SpriteFont>("GameFont"), $"YOU WIN!", Color.Black);
-                    circle.xSpeed = new Vector2(10, 0);
-                    circle.ySpeed = new Vector2(0, 10);
+                    circle.xSpeed = new Vector2(0, 0);
+                    circle.ySpeed = new Vector2(0, 0);
                 }
             }
 
