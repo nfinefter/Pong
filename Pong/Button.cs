@@ -11,37 +11,42 @@ namespace Pong
     public class Button
     {
         public Texture2D Texture { get; set; }
+        public SpriteFont Font { get; set; }
         public string ButtonText { get; set; }
         public Vector2 Position { get; set; }
-        public Vector2 Size { get; set; }
+        public Vector2 Size => Font.MeasureString(ButtonText);
         public Color Tint { get; set; }
         public Rectangle Hitbox => new Rectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y);
 
-        public Button(string buttonText, Texture2D tex, Vector2 position, Vector2 size, Color tint)
+        public Button(Texture2D text, string buttonText, SpriteFont font, Vector2 position, Color tint)
         {
-            Texture = tex;
+            Texture = text;
+            Font = font;
             ButtonText = buttonText;
             Position = position;
-            Size = size;
             Tint = tint;
         }
 
 
-        public void CheckMouse()
+        public bool CheckMouse(bool playAgain)
         {
             MouseState mouseState = Mouse.GetState();
 
+            
+            
             if (mouseState.LeftButton == ButtonState.Pressed && Hitbox.Contains(mouseState.Position))
             {
-                // button was pressed
+                return true;
             }
+            return false;
 
         }
 
 
-        public void DrawButton(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, Hitbox, Tint);
+            spriteBatch.Draw(Texture, Position, Tint);
+            spriteBatch.DrawString(Font, ButtonText, Position, Tint);
         }
     }
 }

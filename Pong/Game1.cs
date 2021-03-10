@@ -7,15 +7,19 @@ namespace Pong
     public class Game1 : Game
     {
 
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
 
-        Sprite circle;
-        Sprite leftPaddle;
-        Sprite rightPaddle;
+        private Sprite circle;
+        private Sprite leftPaddle;
+        private Sprite rightPaddle;
 
-        TextSprite score;
-        TextSprite playAgain;
+        private TextSprite score;
+        private TextSprite playAgain;
+
+        private Button yesButton;
+        private Button noButton;
+        private bool IsPlayAgainSelected;
 
         // TODO: Why do these exist??? Aren't they part of their classes???
 
@@ -28,7 +32,17 @@ namespace Pong
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
-
+        protected void GameOver()
+        {
+            playAgain.Tint = Color.White;
+            yesButton.Tint = Color.White;
+            noButton.Tint = Color.White;
+            leftPaddle.Tint = Color.Transparent;
+            rightPaddle.Tint = Color.Transparent;
+            circle.Tint = Color.Transparent;
+            circle.xSpeed = new Vector2(0, 0);
+            circle.ySpeed = new Vector2(0, 0);
+        }
         protected void Reset()
         {
             Vector2 leftPaddleYSpeed = new Vector2(0, 10);
@@ -39,19 +53,30 @@ namespace Pong
             Vector2 circleXSpeed = new Vector2(10, 0);
 
             scoreNum = 0;
+            
+            Texture2D backImage = Content.Load<Texture2D>("buttonbackground");
+            SpriteFont font = Content.Load<SpriteFont>("GameFont");
+
+            Vector2 playAgainPos = (new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2));
 
             leftPaddle = new Sprite(new Vector2(10, 250), pixel, new Point(30, 100), Color.White, leftPaddleXSpeed, leftPaddleYSpeed);
             rightPaddle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width - 40, 250), pixel, new Point(30, 100), Color.White, rightPaddleXSpeed, rightPaddleYSpeed);
             circle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2, GraphicsDevice.Viewport.Bounds.Height / 2), pixel, new Point(50, 50), Color.White, circleXSpeed, circleYSpeed);
-            score = new TextSprite(Vector2.Zero, Content.Load<SpriteFont>("GameFont"), $"Score: {scoreNum}", Color.Black);
-            playAgain = new TextSprite(new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2), Content.Load<SpriteFont>("GameFont"), "PLAY AGAIN?", Color.Transparent);
+            score = new TextSprite(Vector2.Zero, font, $"Score: {scoreNum}", Color.Black);
+            playAgain = new TextSprite(playAgainPos, font, "PLAY AGAIN?", Color.Transparent);
 
+            Vector2 yesbuttonPos = new Vector2(playAgainPos.X, playAgainPos.Y + 60);
+            Vector2 nobuttonPos = new Vector2(playAgainPos.X + 60, playAgainPos.Y + 60);
+
+            yesButton = new Button(backImage, "Yes", font, yesbuttonPos, Color.Transparent );
+            noButton = new Button(backImage, "No", font, nobuttonPos, Color.Transparent);
         }
 
         protected override void Initialize()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             IsMouseVisible = true;
+             
 
             base.Initialize();
         }
@@ -89,11 +114,11 @@ namespace Pong
                 circle.Position = new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
 
                 score = new TextSprite(Vector2.Zero, Content.Load<SpriteFont>("GameFont"), $"YOU LOSE!", Color.Black);
-                circle.xSpeed = new Vector2(0, 0);
-                circle.ySpeed = new Vector2(0, 0);
-                score.Tint = Color.Transparent;
-                playAgain.Tint = Color.Black;
-                //Reset();
+                GameOver();
+                if (yesButton.CheckMouse(IsPlayAgainSelected))
+                {
+                    Reset();
+                }
             }
             else if (circle.Position.X + 50 >= GraphicsDevice.Viewport.Bounds.Width)
             {
@@ -108,11 +133,15 @@ namespace Pong
                 if (scoreNum >= 6)
                 {
                     score = new TextSprite(Vector2.Zero, Content.Load<SpriteFont>("GameFont"), $"YOU WIN!", Color.Black);
-                    circle.xSpeed = new Vector2(0, 0);
-                    circle.ySpeed = new Vector2(0, 0);
-                    playAgain.Tint = Color.Black;
-                    //Reset();
+
+                    GameOver();
+                    if (yesButton.CheckMouse(IsPlayAgainSelected))
+                    {
+                        Reset();
+                    }
+
                 }
+            
             }
 
             if (circle.Position.Y <= 0)
@@ -160,8 +189,17 @@ namespace Pong
             leftPaddle.Draw(spriteBatch);
             rightPaddle.Draw(spriteBatch);
             score.Draw(spriteBatch);
+            
+
             playAgain.Draw(spriteBatch);
+
+            noButton.Draw(spriteBatch);
+
+            yesButton.Draw(spriteBatch);
+            
+
             spriteBatch.End();
+            
             base.Draw(gameTime);
         }
     }
