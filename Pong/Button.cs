@@ -28,21 +28,33 @@ namespace Pong
         }
 
 
-        public bool CheckMouse(bool playAgain)
+        public bool IsClicked()
         {
             MouseState mouseState = Mouse.GetState();
 
-            
-            
             if (mouseState.LeftButton == ButtonState.Pressed && Hitbox.Contains(mouseState.Position))
             {
+                Tint = Color.Gray * 0.9f;
                 return true;
             }
             return false;
 
         }
 
+        public void Hover()
+        {
 
+                MouseState mouseState = Mouse.GetState();
+                if (Hitbox.Contains(mouseState.Position))
+                {
+                    Tint = Color.Black * 0.6f;
+                }
+                else
+                {
+                    Tint = Color.White;
+                }
+            
+        }
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Texture, Position, Tint);

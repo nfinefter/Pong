@@ -21,6 +21,8 @@ namespace Pong
         private Button noButton;
         private bool IsPlayAgainSelected;
 
+        private bool gameEnded;
+
         // TODO: Why do these exist??? Aren't they part of their classes???
 
         int scoreNum;
@@ -34,6 +36,7 @@ namespace Pong
         }
         protected void GameOver()
         {
+            gameEnded = true;
             playAgain.Tint = Color.White;
             yesButton.Tint = Color.White;
             noButton.Tint = Color.White;
@@ -53,6 +56,7 @@ namespace Pong
             Vector2 circleXSpeed = new Vector2(10, 0);
 
             scoreNum = 0;
+            gameEnded = false;
             
             Texture2D backImage = Content.Load<Texture2D>("buttonbackground");
             SpriteFont font = Content.Load<SpriteFont>("GameFont");
@@ -95,7 +99,15 @@ namespace Pong
 
         protected override void Update(GameTime gameTime)
         {
-            
+            if (gameEnded == true)
+            {
+                yesButton.Hover();
+                noButton.Hover();
+            }
+
+
+            IsPlayAgainSelected = yesButton.IsClicked();
+
             circle.Position += circle.xSpeed;
             circle.Position += circle.ySpeed;
 
@@ -108,14 +120,20 @@ namespace Pong
             {
                 rightPaddle.ySpeed *= -1;
             }
-
-            if (circle.Position.X <= 0)
+            if (circle.Position.X < 0)
+            {
+                scoreNum --;
+            }
+            if (scoreNum < 0)
             {
                 circle.Position = new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
 
                 score = new TextSprite(Vector2.Zero, Content.Load<SpriteFont>("GameFont"), $"YOU LOSE!", Color.Black);
                 GameOver();
-                if (yesButton.CheckMouse(IsPlayAgainSelected))
+
+                IsPlayAgainSelected = yesButton.IsClicked();
+
+                if (IsPlayAgainSelected)
                 {
                     Reset();
                 }
@@ -135,11 +153,13 @@ namespace Pong
                     score = new TextSprite(Vector2.Zero, Content.Load<SpriteFont>("GameFont"), $"YOU WIN!", Color.Black);
 
                     GameOver();
-                    if (yesButton.CheckMouse(IsPlayAgainSelected))
+
+                    IsPlayAgainSelected = yesButton.IsClicked();
+
+                    if (IsPlayAgainSelected)
                     {
                         Reset();
                     }
-
                 }
             
             }
