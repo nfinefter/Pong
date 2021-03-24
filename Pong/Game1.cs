@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace Pong
 {
@@ -45,20 +46,16 @@ namespace Pong
             leftPaddle.Tint = Color.Transparent;
             rightPaddle.Tint = Color.Transparent;
             circle.Tint = Color.Transparent;
-            circle.xSpeed = new Vector2(0, 0);
-            circle.ySpeed = new Vector2(0, 0);
+            circle.Speed = new Vector2(0, 0);
         }
         protected void Reset()
         {
             IsPlayAgainSelected = false;
             IsExitSelected = false;
 
-            Vector2 leftPaddleYSpeed = new Vector2(0, 10);
-            Vector2 leftPaddleXSpeed = new Vector2(0, 0);
-            Vector2 rightPaddleYSpeed = new Vector2(0, 20);
-            Vector2 rightPaddleXSpeed = new Vector2(0, 0);
-            Vector2 circleYSpeed = new Vector2(0, 10);
-            Vector2 circleXSpeed = new Vector2(10, 0);
+            Vector2 leftPaddleSpeed = new Vector2(10, 10);
+            Vector2 rightPaddleSpeed = new Vector2(20, 20);
+            Vector2 circleSpeed = new Vector2(10, 10);
 
             scoreNum = 0;
             gameEnded = false;
@@ -68,9 +65,9 @@ namespace Pong
 
             Vector2 playAgainPos = (new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2));
 
-            leftPaddle = new Sprite(new Vector2(10, 250), pixel, new Point(30, 100), Color.White, leftPaddleXSpeed, leftPaddleYSpeed);
-            rightPaddle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width - 40, 250), pixel, new Point(30, 100), Color.White, rightPaddleXSpeed, rightPaddleYSpeed);
-            circle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2, GraphicsDevice.Viewport.Bounds.Height / 2), pixel, new Point(50, 50), Color.White, circleXSpeed, circleYSpeed);
+            leftPaddle = new Sprite(new Vector2(10, 250), pixel, new Point(30, 100), Color.White, leftPaddleSpeed);
+            rightPaddle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width - 40, 250), pixel, new Point(30, 100), Color.White, rightPaddleSpeed);
+            circle = new Sprite(new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2, GraphicsDevice.Viewport.Bounds.Height / 2), pixel, new Point(50, 50), Color.White, circleSpeed);
             score = new TextSprite(Vector2.Zero, font, $"Score: {scoreNum}", Color.Black);
             playAgain = new TextSprite(playAgainPos, font, "PLAY AGAIN?", Color.Transparent);
 
@@ -110,17 +107,17 @@ namespace Pong
             IsPlayAgainSelected = yesButton.IsClicked();
             IsExitSelected = noButton.IsClicked();
 
-            circle.Position += circle.xSpeed;
-            circle.Position += circle.ySpeed;
+            circle.Position += circle.Speed;
 
-            rightPaddle.Position += rightPaddle.ySpeed;
+            rightPaddle.Position += rightPaddle.Speed;
+
             if (rightPaddle.Position.Y + 100 <= GraphicsDevice.Viewport.Bounds.Height)
             {
-                rightPaddle.ySpeed *= -1;
+                rightPaddle.Position -= new Vector2(0, rightPaddle.Speed.Y);
             }
             if (rightPaddle.Position.Y >= 0)
             {
-                rightPaddle.ySpeed *= -1;
+                rightPaddle.Position += new Vector2(0, rightPaddle.Speed.Y);
             }
             if (circle.Position.X < 0)
             {
@@ -173,8 +170,7 @@ namespace Pong
             {
                 circle.Position = new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
                 
-                circle.xSpeed *= -1;
-                circle.ySpeed *= -1;
+                circle.Speed *= -1;
 
                 score = new TextSprite(Vector2.Zero, Content.Load<SpriteFont>("GameFont"), $"Score: {scoreNum}", Color.Black);
 
@@ -184,35 +180,33 @@ namespace Pong
 
             if (circle.Position.Y <= 0)
             {
-                circle.ySpeed *= -1;
+                circle.Speed = new Vector2(circle.Speed.X, Math.Abs(circle.Speed.Y));
             }
             else if (circle.Position.Y + 50 >= GraphicsDevice.Viewport.Bounds.Height)
             {
-                circle.ySpeed *= -1;
+                circle.Speed = new Vector2(circle.Speed.X, -Math.Abs(circle.Speed.Y));
             }
 
             var keyboard = Keyboard.GetState();
 
             if (keyboard.IsKeyDown(Keys.Down) && leftPaddle.Position.Y + 100 <= GraphicsDevice.Viewport.Bounds.Height)
             {
-                leftPaddle.Position += leftPaddle.ySpeed;
+                leftPaddle.Position += new Vector2(0, leftPaddle.Speed.Y);
             }
             else if (keyboard.IsKeyDown(Keys.Up) && leftPaddle.Position.Y >= 0)
             {
-                leftPaddle.Position -= leftPaddle.ySpeed;
+                leftPaddle.Position -= new Vector2(0, leftPaddle.Speed.Y);
             }
             
 
             // Intersect with paddle check
             if(leftPaddle.HitBox.Intersects(circle.HitBox))
             {
-                circle.xSpeed *= -1;
-                circle.ySpeed *= -1;
+                circle.Speed = new Vector2(Math.Abs(circle.Speed.X), Math.Abs(circle.Speed.Y));
             }
             else if (rightPaddle.HitBox.Intersects(circle.HitBox))
             {
-                circle.xSpeed *= -1;
-                circle.ySpeed *= -1;
+                circle.Speed = new Vector2(-Math.Abs(circle.Speed.X), -Math.Abs(circle.Speed.Y));
             }
 
             base.Update(gameTime);
