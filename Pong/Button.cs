@@ -34,7 +34,7 @@ namespace Pong
 
             if (mouseState.LeftButton == ButtonState.Pressed && Hitbox.Contains(mouseState.Position))
             {
-                Tint = Color.Gray * 0.9f;
+              //  Tint = Color.Gray * 0.9f;
                 return true;
             }
             return false;

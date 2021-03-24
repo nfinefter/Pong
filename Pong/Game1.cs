@@ -20,6 +20,7 @@ namespace Pong
         private Button yesButton;
         private Button noButton;
         private bool IsPlayAgainSelected;
+        private bool IsExitSelected;
 
         private bool gameEnded;
 
@@ -36,6 +37,7 @@ namespace Pong
         }
         protected void GameOver()
         {
+            
             gameEnded = true;
             playAgain.Tint = Color.White;
             yesButton.Tint = Color.White;
@@ -48,6 +50,9 @@ namespace Pong
         }
         protected void Reset()
         {
+            IsPlayAgainSelected = false;
+            IsExitSelected = false;
+
             Vector2 leftPaddleYSpeed = new Vector2(0, 10);
             Vector2 leftPaddleXSpeed = new Vector2(0, 0);
             Vector2 rightPaddleYSpeed = new Vector2(0, 20);
@@ -74,6 +79,7 @@ namespace Pong
 
             yesButton = new Button(backImage, "Yes", font, yesbuttonPos, Color.Transparent );
             noButton = new Button(backImage, "No", font, nobuttonPos, Color.Transparent);
+
         }
 
         protected override void Initialize()
@@ -99,14 +105,10 @@ namespace Pong
 
         protected override void Update(GameTime gameTime)
         {
-            if (gameEnded == true)
-            {
-                yesButton.Hover();
-                noButton.Hover();
-            }
 
 
             IsPlayAgainSelected = yesButton.IsClicked();
+            IsExitSelected = noButton.IsClicked();
 
             circle.Position += circle.xSpeed;
             circle.Position += circle.ySpeed;
@@ -131,11 +133,40 @@ namespace Pong
                 score = new TextSprite(Vector2.Zero, Content.Load<SpriteFont>("GameFont"), $"YOU LOSE!", Color.Black);
                 GameOver();
 
+                yesButton.Hover();
+                noButton.Hover();
+
                 IsPlayAgainSelected = yesButton.IsClicked();
+                IsExitSelected = noButton.IsClicked();
+
+                if (IsPlayAgainSelected)
+                {
+                    Reset();             
+                }
+                else if (IsExitSelected)
+                {
+                    Exit();
+                }
+            }
+            else if (scoreNum >= 6)
+            {
+                score = new TextSprite(Vector2.Zero, Content.Load<SpriteFont>("GameFont"), $"YOU WIN!", Color.Black);
+
+                GameOver();
+
+                yesButton.Hover();
+                noButton.Hover();
+
+                IsPlayAgainSelected = yesButton.IsClicked();
+                IsExitSelected = noButton.IsClicked();
 
                 if (IsPlayAgainSelected)
                 {
                     Reset();
+                }
+                else if (IsExitSelected)
+                {
+                    Exit();
                 }
             }
             else if (circle.Position.X + 50 >= GraphicsDevice.Viewport.Bounds.Width)
@@ -148,19 +179,6 @@ namespace Pong
                 score = new TextSprite(Vector2.Zero, Content.Load<SpriteFont>("GameFont"), $"Score: {scoreNum}", Color.Black);
 
                 scoreNum++;
-                if (scoreNum >= 6)
-                {
-                    score = new TextSprite(Vector2.Zero, Content.Load<SpriteFont>("GameFont"), $"YOU WIN!", Color.Black);
-
-                    GameOver();
-
-                    IsPlayAgainSelected = yesButton.IsClicked();
-
-                    if (IsPlayAgainSelected)
-                    {
-                        Reset();
-                    }
-                }
             
             }
 
