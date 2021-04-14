@@ -23,8 +23,6 @@ namespace Pong
         private bool IsPlayAgainSelected;
         private bool IsExitSelected;
 
-        private bool gameEnded;
-
         private int randNum = 0;
         private Random rand ;
 
@@ -70,8 +68,7 @@ namespace Pong
         }
         protected void GameOver()
         {
-            
-            gameEnded = true;
+    
             playAgain.Tint = Color.White;
             yesButton.Tint = Color.White;
             noButton.Tint = Color.White;
@@ -90,7 +87,6 @@ namespace Pong
             Vector2 circleSpeed = new Vector2(12, 12);
 
             scoreNum = 0;
-            gameEnded = false;
             
             Texture2D backImage = Content.Load<Texture2D>("buttonbackground");
             SpriteFont font = Content.Load<SpriteFont>("GameFont");
