@@ -39,6 +39,35 @@ namespace Pong
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
+        protected void EndingGameOptions()
+        {
+            ball.Position = new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
+            if (scoreNum < 0)
+            {
+                score = new TextSprite(Vector2.Zero, Content.Load<SpriteFont>("GameFont"), $"YOU LOSE!", Color.Black);
+            }
+            if (scoreNum >= 6)
+            {
+                score = new TextSprite(Vector2.Zero, Content.Load<SpriteFont>("GameFont"), $"YOU WIN!", Color.Black);
+            }
+            
+            GameOver();
+
+            yesButton.Hover();
+            noButton.Hover();
+
+            IsPlayAgainSelected = yesButton.IsClicked();
+            IsExitSelected = noButton.IsClicked();
+
+            if (IsPlayAgainSelected)
+            {
+                Reset();
+            }
+            else if (IsExitSelected)
+            {
+                Exit();
+            }
+        }
         protected void GameOver()
         {
             
@@ -112,72 +141,22 @@ namespace Pong
 
             ball.Position += ball.Speed;
 
-            // rightPaddle.Position += rightPaddle.Speed;
-
             //if you are within the screen area and the speed of the ball is positive, have your paddle move down matching the speed of the ball
             //however, if the ball speed is neagative, have your paddle move up matching the ball speed
 
-
-
             leftPaddle.Update(GraphicsDevice.Viewport.Height);
             rightPaddle.Update(GraphicsDevice.Viewport.Height, randNum, ball);
-
-            //if (rightPaddle.Position.Y + rightPaddle.Size.Y <= GraphicsDevice.Viewport.Bounds.Height && circle.Speed.Y > 0 && randNum == 0)
-            //{
-            //    rightPaddle.Position += new Vector2(0, Math.Abs(circle.Speed.Y));
-            //}
-            //else if (circle.Speed.Y < 0 && rightPaddle.Position.Y >= 0 && randNum == 0)
-            //{
-            //    rightPaddle.Position += new Vector2(0, -Math.Abs(circle.Speed.Y));
-            //}
 
             if (ball.Position.X < 0)
             {
                 scoreNum--;
             }
-            if (scoreNum < 0)
+
+            if (scoreNum < 0 || scoreNum >= 6)
             {
-                ball.Position = new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
-
-                score = new TextSprite(Vector2.Zero, Content.Load<SpriteFont>("GameFont"), $"YOU LOSE!", Color.Black);
-                GameOver();
-
-                yesButton.Hover();
-                noButton.Hover();
-
-                IsPlayAgainSelected = yesButton.IsClicked();
-                IsExitSelected = noButton.IsClicked();
-
-                if (IsPlayAgainSelected)
-                {
-                    Reset();             
-                }
-                else if (IsExitSelected)
-                {
-                    Exit();
-                }
+                EndingGameOptions();
             }
-            else if (scoreNum >= 6)
-            {
-                score = new TextSprite(Vector2.Zero, Content.Load<SpriteFont>("GameFont"), $"YOU WIN!", Color.Black);
 
-                GameOver();
-
-                yesButton.Hover();
-                noButton.Hover();
-
-                IsPlayAgainSelected = yesButton.IsClicked();
-                IsExitSelected = noButton.IsClicked();
-
-                if (IsPlayAgainSelected)
-                {
-                    Reset();
-                }
-                else if (IsExitSelected)
-                {
-                    Exit();
-                }
-            }
             else if (ball.Position.X + ball.Size.X >= GraphicsDevice.Viewport.Bounds.Width)
             {
                 ball.Position = new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
@@ -197,18 +176,6 @@ namespace Pong
             {
                 ball.Speed = new Vector2(ball.Speed.X, -Math.Abs(ball.Speed.Y));
             }
-
-            //var keyboard = Keyboard.GetState();
-
-            //if (keyboard.IsKeyDown(Keys.Down) && leftPaddle.Position.Y + 100 <= GraphicsDevice.Viewport.Bounds.Height)
-            //{
-            //    leftPaddle.Position += new Vector2(0, leftPaddle.Speed.Y);
-            //}
-            //else if (keyboard.IsKeyDown(Keys.Up) && leftPaddle.Position.Y >= 0)
-            //{
-            //    leftPaddle.Position -= new Vector2(0, leftPaddle.Speed.Y);
-            //}
-            
 
             // Intersect with paddle check
             if(leftPaddle.HitBox.Intersects(ball.HitBox))
