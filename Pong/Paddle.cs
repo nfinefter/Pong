@@ -34,15 +34,22 @@ namespace Pong
 
         public void Update(int ScreenHeight, int randNum, Ball ball)
         {
-            if (Position.Y + Size.Y <= ScreenHeight && Speed.Y > 0 && randNum == 0)
+            //Also works
+            //Position += new Vector2(0, ball.Speed.Y);
+            //Math.Max(0, Math.Min(ScreenHeight, Position.Y + Size.Y));
+
+
+
+            if (Position.Y + Size.Y <= ScreenHeight && ball.Speed.Y > 0 && randNum == 0)
             {
                 Position += new Vector2(0, Math.Abs(ball.Speed.Y));
             }
-            else if (Speed.Y < 0 && Position.Y >= 0 && randNum == 0)
+            else if (Position.Y >= 0 && ball.Speed.Y < 0 && randNum == 0)
             {
                 Position += new Vector2(0, -Math.Abs(ball.Speed.Y));
             }
-        } 
+
+        }
 
     }
 }
